@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <title>Pomodoro Timer</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
+   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!-- Compiled and minified JavaScript -->
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script> -->
+  <script src="js/timer.js"></script>
+  <script src="js/timerManager.js"></script>
+
+
+  <!-- <script src="js/pomodoroTimer.js"></script> -->
+  <body>
+    <h1 id="time"></h1>
+    <i id="lessMinutes" class="material-icons">remove</i><span id="minuteField">25</span><i id="moreMinutes" class="material-icons">add</i>
+    <span id="timeDisplay"></span>
+    <button id="pause">Pause</button>
+    <button id="start">Start</button>
+    <button id="reset">Reset</button>
+  <script>
+
+    window.onload = function(){
+      // Constants
+      let lessMinutes = document.getElementById("lessMinutes");
+      let moreMinutes = document.getElementById("moreMinutes");
+      let timeDisplay = document.getElementById("timeDisplay");
+      let clickStart = document.getElementById("start");
+      let clickPause = document.getElementById("pause");
+      let clickReset = document.getElementById("reset");
+
+      let minuteField = document.getElementById("minuteField");
+
+      // Create Timer Manager using Default Pomodoro settings.
+      var time = new TimerManager(new PomodoroTimer());
+      // Pass in the ID for display
+      time.display("timeDisplay");
+
+      // Event Listeners
+      lessMinutes.addEventListener("click", function(){
+        console.log("minus");
+        // Checks if able to decrease minute field based on the timer information
+        time.decreaseSessionTime("minuteField")
+        time.display("timeDisplay");
+      });
+
+      moreMinutes.addEventListener("click", function(){
+        console.log("plus");
+        time.increaseSessionTime("minuteField")
+        time.display("timeDisplay");
+      });
+
+      clickStart.addEventListener("click", function(){
+        console.log("Start");
+        // Starts countdown
+        time.start("timeDisplay");
+
+      });
+
+      clickPause.addEventListener("click", function(){
+        console.log("Pause");
+        // Stop countdown
+        time.stop();
+      });
+
+      clickReset.addEventListener("click", function(){
+        console.log("Reset");
+        // Resets the starting minutes to the minutefield value
+        time.reset(parseInt(minuteField.innerHTML));
+        time.display("timeDisplay");
+      });
+    }
+
+
+
+
+
+
+  </script>
+  </body>
+</html>
