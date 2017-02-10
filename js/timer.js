@@ -9,14 +9,19 @@ class Timer{
     this.interval = false;
   }
 
-  pad(value) {
-      if(value < 10){
-        return "0" + value;
-      }else{
-        return value;
-      }
+  // Resets seconds to 0;
+  resetValues(){
+    this.seconds = 0;
   }
 
+  // Interval stores the setInterval method for the timer. PauseTimer, clears the method
+  // and sets to false for future application.
+  pauseTimer(){
+    clearTimeout(this.interval);
+    this.interval = false;
+  }
+
+  // Depending on the timer minutes decrease.
   decreaseValue(){
     console.log("Decreased");
     if(this.minutes > this.minSize){
@@ -26,6 +31,7 @@ class Timer{
     return this.minutes;
   }
 
+  // Depending on the timer minutes increase.
   increaseValue(){
     console.log("Increased");
     if(this.minutes < this.maxSize){
@@ -34,16 +40,4 @@ class Timer{
 
     return this.minutes;
   }
-  // Returns value of minutes with padding for values less than 10
-  getMinutes(){
-    return this.pad(this.minutes);
-  }
-
-  // Returns value of minutes with padding for values less than 10
-  getSeconds(){
-    return this.pad(this.seconds);
-  }
-
-
-
 }

@@ -9,4 +9,18 @@
 
 .timer {
   border-radius: 25px;
+
+}
+
+#start, #reset, #pause {
+  height: 6rem;
+}
+.timerRow {
+  background-color:black;
+}
+
+@media (max-width: 425px) {
+  .bottom-margin{
+    margin-bottom: 1em;
+  }
 }
