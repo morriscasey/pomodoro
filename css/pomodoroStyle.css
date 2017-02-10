@@ -1,0 +1,12 @@
+#raiseBreak,#lowerBreak,#raiseSession, #lowerSession,#sessionField, #breakField{
+  font-size: 2rem;
+  vertical-align: middle;
+}
+
+#displaySeconds, #displayMinutes{
+  font-size: 5rem;
+}
+
+.timer {
+  border-radius: 25px;
+}
