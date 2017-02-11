@@ -14,7 +14,7 @@
 
   <body>
     <div id="main" class="container">
-      <div id="timerRow" class="row">
+      <div class="row">
         <div class="col s12">
           <div class="card blue-grey darken-1">
             <div class="card-content center-align white-text">
@@ -90,7 +90,8 @@
       let titleField = document.getElementById("title");
       var theParent = document.getElementById("main");
       var timerButton = document.getElementById("start");
-    
+      var background = document.getElementById("timerBackground");
+      var percentage = 0;
       var timeManager = new TimeManager();
       var activeTimer = timeManager.activeTimer;
 
@@ -113,10 +114,9 @@
             breakField.innerHTML = padding(timeManager.breakTimer.decreaseValue());
 
             if(activeTimer.name == "Break"){
-              timerButton.setAttribute("id", "start");
-              timerButton.innerHTML = "Click to Start";
+              setButton("start");
               activeTimer.pauseTimer();
-              activeTimer.resetValues();
+              activeTimer.resetSeconds();
               updateDisplay(activeTimer);
             }
             break;
@@ -125,10 +125,9 @@
 
             breakField.innerHTML = padding(timeManager.breakTimer.increaseValue());
             if(activeTimer.name == "Break"){
-              timerButton.setAttribute("id", "start");
-              timerButton.innerHTML = "Click to Start";
+              setButton("start");
               activeTimer.pauseTimer();
-              activeTimer.resetValues();
+              activeTimer.resetSeconds();
               updateDisplay(activeTimer);
             }
             break;
@@ -137,10 +136,9 @@
             sessionField.innerHTML = padding(timeManager.sessionTimer.decreaseValue());
 
             if(activeTimer.name == "Session"){
-              timerButton.setAttribute("id", "start");
-              timerButton.innerHTML = "Click to Start";
+              setButton("start");
               activeTimer.pauseTimer();
-              activeTimer.resetValues();
+              activeTimer.resetSeconds();
               updateDisplay(activeTimer);
             }
             break;
@@ -149,37 +147,37 @@
             sessionField.innerHTML = padding(timeManager.sessionTimer.increaseValue());
 
             if(activeTimer.name == "Session"){
-              timerButton.setAttribute("id", "start");
-              timerButton.innerHTML = "Click to Start";
+              setButton("start");
               activeTimer.pauseTimer();
-              activeTimer.resetValues();
+              activeTimer.resetSeconds();
               updateDisplay(activeTimer);
             }
             break;
           case "start":
             console.log("Start Counter");
 
-            timerButton.setAttribute("id", "pause");
-            timerButton.innerHTML = "Click to Pause";
+            setButton("pause");
             counter();
             break;
 
           case "pause":
             console.log("Pause");
             activeTimer.pauseTimer();
-            timerButton.setAttribute("id", "start");
-            timerButton.innerHTML = "Click to Resume";
+            setButton("start");
             break;
           case "reset":
             console.log("Reset");
             activeTimer.pauseTimer();
-            activeTimer.resetValues();
+            activeTimer.resetSeconds();
             console.log(timeManager.sessionTimer.minutes);
 
             if(activeTimer.name == "Session"){
               activeTimer.minutes = parseInt(sessionField.innerHTML);
             }else{
-              activeTimer.minutes = parseInt(breakField.innerHTML);
+              // Method swaps out session timer for break timer and visa versa.
+              timeManager.changeActiveTimer();
+              activeTimer = timeManager.activeTimer;
+              initialize();
             }
             updateDisplay(activeTimer);
             break;
@@ -198,6 +196,7 @@
       // Displays active timer
       function updateDisplay(currentTimer){
         console.log("Name:"+ currentTimer.name + "Min:"+currentTimer.minutes+"Sec:"+currentTimer.seconds);
+
         displayMinutes.innerHTML = padding(currentTimer.minutes);
         displaySeconds.innerHTML = padding(currentTimer.seconds);
       }
@@ -207,21 +206,26 @@
       function counter(){
         activeTimer.interval = setInterval(function(){
             if(activeTimer.minutes == 0 && activeTimer.seconds == 0){
+              // Stops setInterval and changes the active timer interval to false.
               activeTimer.pauseTimer();
-              activeTimer.resetValues();
+              // Resets active timer seconds to 0
+              activeTimer.resetSeconds();
+              // Condition resets the minutes for active timer back to the field selected.
+              // Ex: if session is the active timer then sessionField's value determines what reset too.
               if(activeTimer.name == "Session"){
                 activeTimer.minutes = parseInt(sessionField.innerHTML);
               }else{
                 activeTimer.minutes = parseInt(breakField.innerHTML);
               }
-              console.log("Prev Info: Name:"+ activeTimer.name + "Min:"+activeTimer.minutes+"Sec:"+activeTimer.seconds);
+
+              // Method swaps out session timer for break timer and visa versa.
               timeManager.changeActiveTimer();
+
               activeTimer = timeManager.activeTimer;
+              // Changes the title and changes the display to match the new timer.
               initialize();
+              // Starts the countdown process
               counter();
-              console.log("New Info: Name:"+ activeTimer.name + "Min:"+activeTimer.minutes+"Sec:"+activeTimer.seconds);
-
-
 
             } else if(activeTimer.seconds == 0){
               activeTimer.minutes -= 1;
@@ -237,6 +241,11 @@
       function initialize(){
         titleField.innerHTML = activeTimer.name;
         updateDisplay(activeTimer);
+      }
+
+      function setButton(buttonId){
+        timerButton.setAttribute("id", buttonId);
+        timerButton.innerHTML = "Click to "+ buttonId.toUpperCase();
       }
     }
 

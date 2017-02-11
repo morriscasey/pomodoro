@@ -10,7 +10,7 @@ class Timer{
   }
 
   // Resets seconds to 0;
-  resetValues(){
+  resetSeconds(){
     this.seconds = 0;
   }
 

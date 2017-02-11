@@ -15,9 +15,6 @@
 #start, #reset, #pause {
   height: 6rem;
 }
-.timerRow {
-  background-color:black;
-}
 
 @media (max-width: 425px) {
   .bottom-margin{
