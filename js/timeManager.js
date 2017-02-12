@@ -1,13 +1,30 @@
 class TimeManager{
   // Constructor for now built concrete class for session and break timers.
-  constructor(){
-    this.sessionTimer = new Timer("Session", 25, 200, 1, 1);
-    this.breakTimer = new Timer("Break", 5, 100, 1,1);
-    this.activeTimer = this.sessionTimer;
+  constructor(elementHooks){
+    this._sessionTimer = new Timer("Session", 25, 200, 1, 1);
+    this._breakTimer = new Timer("Break", 5, 100, 1,1);
+    this._activeTimer = this.sessionTimer;
     this.totalOfPomodoros = 0;
+    self = this;
   }
 
-  // Manages switch back and forth with each timer
+  get activeTimer(){
+    return this._activeTimer;
+  }
+
+  set activeTimer(newTimer){
+    this._activeTimer = newTimer;
+  }
+
+  get sessionTimer(){
+    return this._sessionTimer;
+  }
+
+  get breakTimer(){
+    return this._breakTimer;
+  }
+  
+  // Manages switching back and forth between timers
   changeActiveTimer(){
     if(this.activeTimer.name == "Session"){
       this.activeTimer = this.breakTimer;

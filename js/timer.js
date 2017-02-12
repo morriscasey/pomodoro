@@ -1,3 +1,4 @@
+// TODO: Change fields to private and add getter and setters.
 class Timer{
   constructor(name, defaultMinutes, maxSize, minSize, incrementRate){
     this.name = name;

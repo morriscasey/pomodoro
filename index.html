@@ -11,6 +11,8 @@
   <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script> -->
   <script src="js/timer.js"></script>
   <script src="js/timeManager.js"></script>
+  <script src="js/elementHooks.js"></script>
+  <script src="js/eventManager.js"></script>
 
   <body>
     <div id="main" class="container">
@@ -83,176 +85,19 @@
   <script>
 
     window.onload = function(){
-      let displayMinutes = document.getElementById("displayMinutes");
-      let displaySeconds = document.getElementById("displaySeconds");
-      let sessionField = document.getElementById("sessionField");
-      let breakField = document.getElementById("breakField");
-      let titleField = document.getElementById("title");
-      var theParent = document.getElementById("main");
-      var timerButton = document.getElementById("start");
-      var background = document.getElementById("timerBackground");
-      var percentage = 0;
-      var timeManager = new TimeManager();
-      var activeTimer = timeManager.activeTimer;
+      var requiredElements = new ElementHooks(document.getElementById("main"));
 
-      initialize();
+      // Linked element IDs to fields within ElementHooks class.
+      requiredElements.displayMinutes = document.getElementById("displayMinutes");
+      requiredElements.displaySeconds = document.getElementById("displaySeconds");
+      requiredElements.sessionField = document.getElementById("sessionField");
+      requiredElements.breakField = document.getElementById("breakField");
+      requiredElements.titleField = document.getElementById("title");
+      requiredElements.timerButton = document.getElementById("start");
 
-      // Create event listener to respond to different elements
-      theParent.addEventListener("click", handleEvent, false);
-
-      function handleEvent(event){
-        if(event.target !== event.currentTarget){
-          var clickedItem = event.target.id;
-          console.log("Clicked:"+ clickedItem);
-
-        }
-        event.stopPropagation();
-        switch(clickedItem){
-
-          case "lowerBreak":
-            console.log("Decreased Break Time");
-            breakField.innerHTML = padding(timeManager.breakTimer.decreaseValue());
-
-            if(activeTimer.name == "Break"){
-              setButton("start");
-              activeTimer.pauseTimer();
-              activeTimer.resetSeconds();
-              updateDisplay(activeTimer);
-            }
-            break;
-          case "raiseBreak":
-            console.log("Increase Break Time");
-
-            breakField.innerHTML = padding(timeManager.breakTimer.increaseValue());
-            if(activeTimer.name == "Break"){
-              setButton("start");
-              activeTimer.pauseTimer();
-              activeTimer.resetSeconds();
-              updateDisplay(activeTimer);
-            }
-            break;
-          case "lowerSession":
-            console.log("Decreased Session Time:"+activeTimer.name);
-            sessionField.innerHTML = padding(timeManager.sessionTimer.decreaseValue());
-
-            if(activeTimer.name == "Session"){
-              setButton("start");
-              activeTimer.pauseTimer();
-              activeTimer.resetSeconds();
-              updateDisplay(activeTimer);
-            }
-            break;
-          case "raiseSession":
-            console.log("Increased Session Time");
-            sessionField.innerHTML = padding(timeManager.sessionTimer.increaseValue());
-
-            if(activeTimer.name == "Session"){
-              setButton("start");
-              activeTimer.pauseTimer();
-              activeTimer.resetSeconds();
-              updateDisplay(activeTimer);
-            }
-            break;
-          case "start":
-            console.log("Start Counter");
-
-            setButton("pause");
-            counter();
-            break;
-
-          case "pause":
-            console.log("Pause");
-            activeTimer.pauseTimer();
-            setButton("start");
-            break;
-          case "reset":
-            console.log("Reset");
-            activeTimer.pauseTimer();
-            activeTimer.resetSeconds();
-            console.log(timeManager.sessionTimer.minutes);
-
-            if(activeTimer.name == "Session"){
-              activeTimer.minutes = parseInt(sessionField.innerHTML);
-            }else{
-              // Method swaps out session timer for break timer and visa versa.
-              timeManager.changeActiveTimer();
-              activeTimer = timeManager.activeTimer;
-              initialize();
-            }
-            updateDisplay(activeTimer);
-            break;
-
-        }
-      }
-      // Add zeros as padding for numbers less than 10.
-      function padding(value) {
-          if(value < 10){
-            return "0" + value;
-          }else{
-            return value;
-          }
-      }
-
-      // Displays active timer
-      function updateDisplay(currentTimer){
-        console.log("Name:"+ currentTimer.name + "Min:"+currentTimer.minutes+"Sec:"+currentTimer.seconds);
-
-        displayMinutes.innerHTML = padding(currentTimer.minutes);
-        displaySeconds.innerHTML = padding(currentTimer.seconds);
-      }
-
-      // Runs set interval every second and counts down the minutes. Once minutes and seconds
-      // reach zero than timer switches from sessions to break and back.
-      function counter(){
-        activeTimer.interval = setInterval(function(){
-            if(activeTimer.minutes == 0 && activeTimer.seconds == 0){
-              // Stops setInterval and changes the active timer interval to false.
-              activeTimer.pauseTimer();
-              // Resets active timer seconds to 0
-              activeTimer.resetSeconds();
-              // Condition resets the minutes for active timer back to the field selected.
-              // Ex: if session is the active timer then sessionField's value determines what reset too.
-              if(activeTimer.name == "Session"){
-                activeTimer.minutes = parseInt(sessionField.innerHTML);
-              }else{
-                activeTimer.minutes = parseInt(breakField.innerHTML);
-              }
-
-              // Method swaps out session timer for break timer and visa versa.
-              timeManager.changeActiveTimer();
-
-              activeTimer = timeManager.activeTimer;
-              // Changes the title and changes the display to match the new timer.
-              initialize();
-              // Starts the countdown process
-              counter();
-
-            } else if(activeTimer.seconds == 0){
-              activeTimer.minutes -= 1;
-              activeTimer.seconds = 59;
-            }else {
-              activeTimer.seconds -= 1;
-            }
-
-            updateDisplay(activeTimer);
-        }, 1000);
-      }
-
-      function initialize(){
-        titleField.innerHTML = activeTimer.name;
-        updateDisplay(activeTimer);
-      }
-
-      function setButton(buttonId){
-        timerButton.setAttribute("id", buttonId);
-        timerButton.innerHTML = "Click to "+ buttonId.toUpperCase();
-      }
+      var eventManager = new EventManager(requiredElements);
+      eventManager.start();
     }
-
-
-
-
-
 
   </script>
   </body>

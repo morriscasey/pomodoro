@@ -16,6 +16,8 @@
   height: 6rem;
 }
 
+
+
 @media (max-width: 425px) {
   .bottom-margin{
     margin-bottom: 1em;
