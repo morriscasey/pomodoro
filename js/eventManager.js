@@ -107,6 +107,7 @@ class EventManager{
 
           self.changeInfo();
         }
+        self.setButton("start");
         self.updateDisplay(self.timeManager.activeTimer);
         break;
 
